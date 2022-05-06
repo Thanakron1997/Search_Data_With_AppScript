@@ -6,7 +6,7 @@ function doGet() {
 }
  
  
-/* PROCESS FORM */
+//PROCESS FORM
 function processForm(formObject){  
   var result = "";
   if(formObject.searchtext)
