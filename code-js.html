@@ -1,0 +1,63 @@
+<script>
+          //PREVENT FORMS FROM SUBMITTING / PREVENT DEFAULT BEHAVIOUR
+          function preventFormSubmit() {
+            var forms = document.querySelectorAll('form');
+            for (var i = 0; i < forms.length; i++) {
+              forms[i].addEventListener('submit', function(event) {
+              event.preventDefault();
+              });
+            }
+          }
+          window.addEventListener("load", preventFormSubmit, true); 
+             
+          
+          //HANDLE FORM SUBMISSION
+          function handleFormSubmit(formObject) {
+            document.getElementById('search').innerHTML = "Loading";
+            document.getElementById('spinner').classList.remove("d-none");
+            google.script.run.withSuccessHandler(createTable).processForm(formObject);
+            document.getElementById("search-form").reset();
+          }
+        
+          //CREATE THE DATA TABLE
+          function createTable(dataArray) {
+            document.getElementById('search').innerHTML = "Search";
+            document.getElementById('spinner').classList.add("d-none");
+            if(dataArray && dataArray !== undefined && dataArray.length != 0){
+              var result = "<table class='table table-sm table-striped table table-bordered' id='dtable' style='font-size: 14px'>"+
+                           "<thead style='word-wrap: break-word'>"+
+                             "<tr>"+                               //Change table headings to match witht he Google Sheet
+                              "<th scope='col' style='word-wrap: break-word'>Project</th>"+
+                              "<th scope='col' style='word-wrap: break-word'>Subject Number</th>"+
+                              "<th scope='col' style='word-wrap: break-word'>Gr Visit</th>"+
+                              "<th scope='col' style='word-wrap: break-word'>PV (RN)</th>"+
+                              "<th scope='col' style='word-wrap: break-word'>PV (RA)</th>"+
+                              "<th scope='col' style='word-wrap: break-word'>Name</th>"+
+                              "<th scope='col' style='word-wrap: break-word'>Last Name</th>"+
+                              "<th scope='col' style='word-wrap: break-word'>Hospital Number</th>"+
+                              "<th scope='col' style='word-wrap: break-word'>Phone Number</th>"+
+                              "<th scope='col' style='word-wrap: break-word'>Next Visit</th>"+
+                              "<th scope='col' style='word-wrap: break-word'>Next Visit Date</th>"+
+                            
+                            "</tr>"+
+                          "</thead>";
+              for(var i=0; i<dataArray.length; i++) {
+                  result += "<tr style='word-wrap: break-word'>";
+                  for(var j=0; j<dataArray[i].length; j++){
+                      result += "<td style='word-wrap: break-word'>"+dataArray[i][j]+"</td>";
+                  }
+                  result += "</tr>";
+              }
+              result += "</table>";
+              var div = document.getElementById('search-results');
+              div.innerHTML = result;
+            }else{
+              var div = document.getElementById('search-results');
+              // //div.empty()
+              div.innerHTML = "Data not found!";
+            }
+ 
+          }
+ 
+          
+</script>
